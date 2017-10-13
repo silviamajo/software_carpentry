@@ -1,0 +1,116 @@
+---
+title: "R_Introduction"
+author: "Sílvia Majó-Vázquez"
+date: "10/13/2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r}
+cat_file <- "https://raw.githubusercontent.com/COMBINE-Australia/RNAseq-R/gh-pages/data/feline-data.csv"
+if(!file.exists("feline-data.csv")) download.file(cat_file, destfile="feline-data.csv")
+cats <- read.csv("feline-data.csv")
+cats
+head(cats)
+View(cats)
+
+
+```
+
+```{r eval=FALSE}
+install.packages("gapminder")
+rm(list = ls())
+
+```
+
+We start here by trainig functions 
+
+```{r}
+my_sum<-function(a, b) {
+  sum1<-a+b
+  return(sum1)
+}
+
+my_sum(10,5)
+fahr_to_kelvin<-function(temp) {
+  kelvin<-((temp-32)*(5/9)+273.15)
+  return(kelvin)
+}
+fahr_to_kelvin(44)
+
+kelvin_to_celsius<-function(kelvin) {
+  celcius<-(kelvin-273.15)
+  return(celcius)
+} 
+kelvin_to_celsius(4)
+
+fahr_to_celcius<-function(temp){
+  tempK<-fahr_to_kelvin(temp)
+  tempC<-kelvin_to_celsius(tempK)
+  return(tempC)
+}
+
+fahr_to_celcius(112)
+
+```
+
+```{r}
+fahr_to_kelvin <- function(temp) {
+  if (!is.numeric(temp)) {
+    stop("temp must be a numeric vector.")
+  }
+  kelvin <- ((temp - 32) * (5 / 9)) + 273.15
+  return(kelvin)
+}
+
+fahr_to_kelvin(44)
+
+```
+```{r}
+gapminder_file <- "https://raw.githubusercontent.com/COMBINE-Australia/RNAseq-R/gh-pages/data/gapminder-FiveYearData.csv"
+
+if(!file.exists("gapminder-FiveYearData.csv")) download.file(gapminder_file, destfile="gapminder-FiveYearData.csv")
+gapminder <- read.csv("gapminder-FiveYearData.csv")
+head(gapminder)
+dim(gapminder)
+View(gapminder)
+
+calcGDP <- function(dat) {
+  gdp <- dat$pop * dat$gdpPercap
+  return(gdp)
+}
+
+calcGDP(head(gapminder))
+
+```
+
+Takes a dataset and multiplies the population column
+with the GDP per capita column.
+
+#if we do not spcify a year or country and set it NULL 
+
+```{r}
+
+calcGDP <- function(dat, year=NULL, country=NULL) {
+  if(!is.null(year)) {
+    dat <- dat[dat$year %in% year, ]
+  }
+  if (!is.null(country)) {
+    dat <- dat[dat$country %in% country,]
+  }
+  gdp <- dat$pop * dat$gdpPercap
+
+  new <- cbind(dat, gdp=gdp)
+  return(new)
+}
+
+calcGDP(head(gapminder), country = "Afghanistan", year=1957)
+
+```
+
+After starting a new session if you want to use the previous functions saved in your working director you can just use source ()
+```{r}
+source("functions/functions-lesson.R")
+```
+
